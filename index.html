@@ -1,0 +1,593 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Online MBA</title>
+  <link rel="icon" type="image" href="images/logofav.png">
+
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: Arial, sans-serif;
+    }
+
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f4f4f4;
+      position: relative;
+     }
+
+    /* Popup Form */
+    .popup-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.5);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity 0.5s ease, visibility 0.5s ease;
+    }
+
+    .popup-overlay.show {
+      opacity: 1;
+      visibility: visible;
+    }
+
+    .popup-form {
+      display: flex;
+      width: 90%;
+      max-width: 1200px;
+      background-color: #fff;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      border-radius: 10px;
+      overflow: hidden;
+      transform: translateY(-30px);
+      transition: transform 0.5s ease;
+      margin: 20px;
+     }
+
+    .popup-overlay.show .popup-form {
+      transform: translateY(0);
+    }
+
+    /* Left Section */
+    .left-section {
+      width: 35%;
+      background-color: #f8f8f8;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .left-section h3 {
+      margin-bottom: 20px;
+      font-size: 20px;
+      color: #333;
+    }
+
+    .left-section .feature-box {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px;
+    }
+
+    .left-section .feature {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      border: 2px solid #ff1500;
+      border-radius: 8px;
+      padding: 10px;
+      text-align: center;
+    }
+
+    .left-section .feature img {
+      width: 40px;
+      height: 40px;
+      margin-bottom: 10px;
+    }
+
+    .left-section .feature span {
+      font-size: 14px;
+      color: #333;
+    }
+
+    .left-section .caption {
+      margin-top: 20px;
+      font-size: 14px;
+      color: #555;
+      text-align: center;
+      line-height: 1.5;
+    }
+
+    /* Right Section */
+    .right-section {
+      width: 65%;
+      padding: 30px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    .right-section h2 {
+      color: #ff1500;
+      margin-bottom: 10px;
+    }
+
+    .right-section p {
+      margin-bottom: 30px;
+      color: #555;
+    }
+
+    .form-group {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 20px;
+    }
+
+    .form-group .input-field {
+      position: relative;
+      flex: 1 1 calc(50% - 15px);
+      margin-top: 15px;
+    }
+
+    .form-group .input-field label {
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      font-size: 14px;
+      color: #aaa;
+      transition: all 0.3s ease;
+      pointer-events: none;
+    }
+
+    .form-group .input-field input,
+    .form-group .input-field select {
+      width: 100%;
+      padding: 10px;
+      padding-top: 20px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      font-size: 14px;
+      transition: border-color 0.3s ease;
+      appearance: none;
+      background-color: white;
+    }
+
+    .form-group .input-field input:focus,
+    .form-group .input-field select:focus {
+      outline: none;
+      border-color: #ff1500;
+    }
+
+    .form-group .input-field input:focus+label,
+    .form-group .input-field select:focus+label,
+    .form-group .input-field input:not(:placeholder-shown)+label,
+    .form-group .input-field select:not([value=""])+label {
+      top: -10px;
+      left: 10px;
+      font-size: 12px;
+      color: #ff1500;
+      background-color: #fff;
+      padding: 0 5px;
+    }
+
+    .terms {
+      margin-top: 15px;
+      font-size: 12px;
+      color: #555;
+    }
+
+    .terms a {
+      color: #ff1500;
+      text-decoration: none;
+    }
+
+    .submit-btn {
+      padding: 10px 15px;
+      background-color: #ff1500;
+      color: #fff;
+      border: none;
+      border-radius: 5px;
+      font-size: 16px;
+      cursor: pointer;
+      text-align: center;
+      margin-top: 20px;
+    }
+
+    .submit-btn:hover {
+      background-color: #c71909;
+    }
+
+    /* Disable Scroll */
+    body.no-scroll {
+      overflow: hidden;
+    }
+
+    @media (max-width: 390px) {
+  .popup-form {
+    flex-direction: column;
+    width: 100%;
+    max-width: 100%;
+    margin: 10px;
+     max-height: 85vh;
+    overflow-y: auto;
+  }
+
+  .right-section {
+    width: 100%;
+    padding: 10px;
+  }
+
+  .form-group .input-field {
+    flex: 1 1 100%;
+    margin-top: 5px;  
+  }
+
+  .form-group .input-field input,
+  .form-group .input-field select {
+    padding: 6px;
+    font-size: 12px; 
+  }
+
+  .form-group .input-field label {
+    font-size: 10px;  
+    top: 5px;  
+  }
+
+  .terms {
+    font-size: 10px; 
+  }
+
+  .submit-btn {
+    padding: 6px 10px;  
+    font-size: 12px;  
+  }
+
+  h2 {
+    font-size: 18px;  
+  }
+
+  p {
+    font-size: 12px;   
+  }
+
+   .form-group {
+    gap: 10px;
+  }
+}
+
+
+    @media (max-width: 768px) {
+      .popup-form {
+        flex-direction: column;
+        width: 100%;
+        max-width: 100%;
+        max-height: 90%;
+         overflow-y: auto;
+         margin: 10px;
+       }
+
+      .left-section {
+        display: none;
+      }
+
+      .right-section {
+        width: 100%;
+        padding: 15px;
+       }
+
+      .form-group .input-field {
+        flex: 1 1 100%;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <!-- main content starts -->
+  <div class="background">
+    <div class="content">
+      <img src="images/logo1.png" alt="NMIMS Logo" class="logo">
+      <h1>Get Top Indian Universities for MBA</h1>
+      <p>Accelerate Your Career Growth</p>
+      <div class="badges">
+        <img src="images/other .png" alt="Ranked Badge">
+
+      </div>
+    </div>
+
+  </div>
+
+  <div class="first-section">
+    <h1>Experience a powerful online education. Unlike any other.</h1>
+    <p>Created by the best in academics and business management.</p>
+  </div>
+  <div class="second-section">
+    <div class="grid-item">
+      <img src="images/1.png" alt="Icon 1" class="icon" />
+      <h3>Seamless Career Transformation with an MBA</h3>
+      <p>Study anytime anywhere with 24X7 access to all lectures ‘live & recorded’</p>
+    </div>
+    <div class="grid-item highlight">
+      <img src="images/2.png" alt="Icon 2" class="icon" />
+      <h3>Leverage the NMIMS Legacy</h3>
+      <p>NMIMS CDOE Programs are highly regarded by top corporate firms in India</p>
+    </div>
+    <div class="grid-item">
+      <img src="images/3.png" alt="Icon 3" class="icon" />
+      <h3>NMIMS excellence, now accessible remotely</h3>
+      <p>Empowering individuals to fulfill their career goals uninterrupted from a location of their choice or on-the-go
+      </p>
+    </div>
+    <div class="grid-item highlight">
+      <img src="images/4.png" alt="Icon 4" class="icon" />
+      <h3>500+ hiring partners, countless opportunities</h3>
+      <p>Get access to 500+ hiring partners including multinational companies, corporations, and start-ups</p>
+    </div>
+    <div class="grid-item">
+      <img src="images/5.png" alt="Icon 5" class="icon" />
+      <h3>UGC-aligned four-quadrant learning model</h3>
+      <p>Access Student Portal: Rich Course Content, Live lectures, Doubt Clearing Sessions, and Industry Experts'
+        sessions</p>
+    </div>
+    <div class="grid-item highlight">
+      <img src="images/6.png" alt="Icon 6" class="icon" />
+      <h3>Advance your career with our dedicated Career Services*</h3>
+      <p>Design your future with Career Services, a unique offering to help achieve your career goals</p>
+    </div>
+  </div>
+
+
+
+
+
+  <!-- Main Content Card -->
+  <div class="main-section">
+    <div class="container">
+      <h1>NMIMS CDOE : India’s Largest Online & Distance Learning Destination</h1>
+      <p>NMIMS CDOE is the distance and online education arm of NMIMS University.</p>
+      <p>NMIMS CDOE began its ODL & OL journey in 2013 with a state-of-the-art learning management system to provide
+        interactive learning on connected platforms 24/7.</p>
+      <p>NMIMS CDOE is changing the dynamics of higher education delivery in India while empowering students across
+        India and enabling them to fulfil their dreams and aspirations.</p>
+    </div>
+  </div>
+
+  <!-- Footer Section -->
+  <div class="footer">
+    <p>© 2024. All Rights Reserved. | <a href="#">Privacy Policy</a></p>
+
+  </div>
+
+  <!-- Popup Overlay -->
+  <div class="popup-overlay" id="popup">
+    <div class="popup-form">
+      <div class="left-section">
+        <h3>How we help you in Admission</h3>
+        <div class="feature-box">
+          <div class="feature">
+            <img src="images/b1.png" alt="">
+            <span>Brochure Details</span>
+          </div>
+          <div class="feature">
+            <img src="images/b2.png" alt="">
+            <span>Check Detailed Fees</span>
+          </div>
+          <div class="feature">
+            <img src="images/b3.png" alt="">
+            <span>Shortlist & Apply</span>
+          </div>
+          <div class="feature">
+            <img src="images/b4.png" alt="">
+            <span>24/7 Counseling</span>
+          </div>
+          <div class="feature">
+            <img src="images/b5.png" alt="">
+            <span>Scholarships</span>
+          </div>
+        </div>
+        <div class="caption">
+          Discover the perfect program to advance your career. Our team is here to guide you every step of the way!
+        </div>
+      </div>
+
+      <div class="right-section">
+        <h2>Register Now To Apply</h2>
+        <p>Get details and latest updates</p>
+        <form id="registration-form">
+          <div class="form-group">
+            <div class="input-field">
+              <input type="text" id="name" placeholder=" " required>
+              <label for="name">Name</label>
+            </div>
+            <div class="input-field">
+              <input type="email" id="email" pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.(com|co\.in)$" placeholder=" "
+                required>
+              <label for="email">Email</label>
+            </div>
+            <div class="input-field">
+              <input 
+              type="tel" id="phone" name="phone" pattern="[6789][0-9]{9}" maxlength="10" placeholder=" " required oninput="this.value = this.value.replace(/[^0-9]/g, '')">
+            
+              <label for="phone">Phone</label>
+            </div>
+
+            <div class="input-field">
+              <input type="text" id="mode" placeholder=" " required>
+              <label for="mode">Mode (Online MBA/ Regular MBA)</label>
+            </div>
+            <div class="input-field">
+              <input type="text" id="city" placeholder=" " required>
+              <label for="city">City</label>
+            </div>
+            <div class="input-field">
+              <select id="state" class="state" required>
+                <option value="" disabled selected></option>
+                <option>Delhi</option>
+                <option>Chandigarh</option>
+                <option>Andhra Pradesh</option>
+                <option>Arunachal Pradesh</option>
+                <option>Telangana</option>
+                <option>Assam</option>
+                <option>Bihar</option>
+                <option>Chhattisgarh</option>
+                <option>Goa</option>
+                <option>Gujarat</option>
+                <option>Haryana</option>
+                <option>Himachal Pradesh</option>
+                <option>Jharkhand</option>
+                <option>Karnataka</option>
+                <option>Kerala</option>
+                <option>Madhya Pradesh</option>
+                <option>Maharashtra</option>
+                <option>Manipur</option>
+                <option>Meghalaya</option>
+                <option>Mizoram</option>
+                <option>Nagaland</option>
+                <option>Odisha</option>
+                <option>Punjab</option>
+                <option>Rajasthan</option>
+                <option>Sikkim</option>
+                <option>Tamil Nadu</option>
+                <option>Tripura</option>
+                <option>Uttar Pradesh</option>
+                <option>Uttarakhand</option>
+                <option>West Bengal</option>
+                <option>Andaman and Nicobar Islands</option>
+                <option>Dadra and Nagar Haveli and Daman and Diu</option>
+                <option>Lakshadweep</option>
+                <option>Puducherry</option>
+                <option>Jammu and Kashmir</option>
+                <option>Ladakh</option>
+              </select>
+              <label for="state">State</label>
+            </div>
+          </div>
+          <p class="terms">By submitting this form, you accept and agree to our <a href="#">Terms of Use</a>.</p>
+          <button type="submit" class="submit-btn">SUBMIT</button>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const popup = document.getElementById('popup');
+      const body = document.body;
+      const form = document.getElementById('registration-form');
+
+      // Show popup after 1 second
+      setTimeout(() => {
+        popup.classList.add('show');
+        body.classList.add('no-scroll');
+      }, 1000);
+
+      // Handle form submission
+      form.addEventListener('submit', (e) => {
+        e.preventDefault();  
+        popup.classList.remove('show');
+        body.classList.remove('no-scroll');
+      });
+    });
+  </script>
+
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/firebase/7.14.1-0/firebase.js"></script>
+
+  <script>
+    // Function to get query parameters
+    function getQueryParams() {
+      const params = {};
+      const queryString = window.location.search.slice(1);
+      queryString.split("&").forEach((pair) => {
+        const [key, value] = pair.split("=");
+        if (key && value) {
+          params[decodeURIComponent(key)] = decodeURIComponent(value);
+        }
+      });
+      return params;
+    }
+
+    // User database click
+    const registrationForm = document.getElementById("registration-form");
+    registrationForm.addEventListener("submit", async (e) => {
+      e.preventDefault();
+
+      // Get form data
+      const name = document.getElementById("name").value;
+      const email = document.getElementById("email").value;
+      const phone = document.getElementById("phone").value;
+      const mode = document.getElementById("mode").value.trim();
+      const state = document.getElementById("state").value;
+      const city = document.getElementById("city").value;
+
+      if (!mode) {
+        alert("Please enter a mode.");
+        return;
+      }
+
+      // Get referrer and query parameters
+      const referrer = document.referrer || "direct";
+      const utmParams = getQueryParams();
+      const keyword = utmParams.keyword || "unknown";
+
+      try {
+        // Add data to Firestore
+        await db.collection("users").add({
+          name,
+          email,
+          phone,
+          mode,
+          state,
+          city,
+          referrer,
+          utm_source: utmParams.utm_source || "unknown",
+          utm_campaign: utmParams.utm_campaign || "unknown",
+          keyword,  
+          timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+        });
+        alert("Data submitted successfully!");
+        registrationForm.reset();
+      } catch (error) {
+        console.error("Error adding document: ", error);
+        alert("Failed to submit data. Check console for details.");
+      }
+    });
+
+    // Firebase config
+    const firebaseConfig = {
+      apiKey: "AIzaSyDzXcMO0QbUO7SI0qfMwMBWnKi2peXcqAE",
+      authDomain: "landingpage-8c073.firebaseapp.com",
+      databaseURL: "https://landingpage-8c073-default-rtdb.firebaseio.com",
+      projectId: "landingpage-8c073",
+      storageBucket: "landingpage-8c073.firebasestorage.app",
+      messagingSenderId: "997450956386",
+      appId: "1:997450956386:web:57b411962c01c700b85b3b",
+      measurementId: "G-7ZRQ8V5DZP",
+    };
+
+    // Initialize Firebase
+    const app = firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
+  </script>
+
+
+
+
+
+</body>
+
+</html>

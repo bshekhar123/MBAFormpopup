@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Online MBA</title>
+  <link rel="icon" type="image" href="images/logofav.png">
+
+  <link rel="stylesheet" href="cc.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            position: relative; /* Ensure the body is positioned for popup */
+        }
+
+        /* Popup Form */
+        .popup-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.5s ease, visibility 0.5s ease;
+        }
+
+        .popup-overlay.show {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .popup-form {
+            display: flex;
+            width: 90%;
+            max-width: 1200px;
+            background-color: #fff;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+            overflow: hidden;
+            transform: translateY(-30px);
+            transition: transform 0.5s ease;
+            margin: 20px; /* Add margin for spacing */
+        }
+
+        .popup-overlay.show .popup-form {
+            transform: translateY(0);
+        }
+
+        /* Left Section */
+        .left-section {
+            width: 35%;
+            background-color: #f8f8f8;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .left-section h3 {
+            margin-bottom: 20px;
+            font-size: 20px;
+            color: #333;
+        }
+
+        .left-section .feature-box {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+        }
+
+        .left-section .feature {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            border: 2px solid #ff6a00;
+            border-radius: 8px;
+            padding: 10px;
+            text-align: center;
+        }
+
+        .left-section .feature img {
+            width: 40px;
+            height: 40px;
+            margin-bottom: 10px;
+        }
+
+        .left-section .feature span {
+            font-size: 14px;
+            color: #333;
+        }
+
+        .left-section .caption {
+            margin-top: 20px;
+            font-size: 14px;
+            color: #555;
+            text-align: center;
+            line-height: 1.5;
+        }
+
+        /* Right Section */
+        .right-section {
+            width: 65%;
+            padding: 30px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .right-section h2 {
+            color: #ff6a00;
+            margin-bottom: 10px;
+        }
+
+        .right-section p {
+            margin-bottom: 30px;
+            color: #555;
+        }
+
+        .form-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .form-group .input-field {
+            position: relative;
+            flex: 1 1 calc(50% - 15px);
+            margin-top: 15px;
+        }
+
+        .form-group .input-field label {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            font-size: 14px;
+            color: #aaa;
+            transition: all 0.3s ease;
+            pointer-events: none;
+        }
+
+        .form-group .input-field input,
+        .form-group .input-field select {
+            width: 100%;
+            padding: 10px;
+            padding-top: 20px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 14px;
+            transition: border-color 0.3s ease;
+            appearance: none;
+            background-color: white;
+        }
+
+        .form-group .input-field input:focus,
+        .form-group .input-field select:focus {
+            outline: none;
+            border-color: #ff6a00;
+        }
+
+        .form-group .input-field input:focus + label,
+        .form-group .input-field select:focus + label,
+        .form-group .input-field input:not(:placeholder-shown) + label,
+        .form-group .input-field select:not([value=""]) + label {
+            top: -10px;
+            left: 10px;
+            font-size: 12px;
+            color: #ff6a00;
+            background-color: #fff;
+            padding: 0 5px;
+        }
+
+        .terms {
+            margin-top: 15px;
+            font-size: 12px;
+            color: #555;
+        }
+
+        .terms a {
+            color: #ff6a00;
+            text-decoration: none;
+        }
+
+        .submit-btn {
+            padding: 10px 15px;
+            background-color: #ff6a00;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .submit-btn:hover {
+            background-color: #e55a00;
+        }
+
+        /* Disable Scroll */
+        body.no-scroll {
+            overflow: hidden;
+        }
+
+        @media (max-width: 375px) {
+            .popup-form {
+                flex-direction: column;
+                width: 100%;
+                max-width: 100%;
+                max-height: 90%; /* Prevents touching top and bottom */
+                overflow-y: auto; /* Add scroll if content exceeds the height */
+                margin: 10px; /* Prevents touching edges */
+            }
+
+            .left-section {
+                display: none;
+            }
+
+            .right-section {
+                width: 100%;
+                padding: 8px; /* Reduced padding for better spacing */
+            }
+
+            .form-group .input-field {
+                flex: 1 1 100%;
+                margin-top: 8px; /* Reduced margin */
+            }
+
+            .form-group .input-field input,
+            .form-group .input-field select {
+                padding: 8px; /* Reduced padding for input fields */
+                font-size: 14px; /* Smaller font size */
+            }
+
+            .form-group .input-field label {
+                font-size: 12px; /* Smaller label size */
+                top: 5px; /* Adjusted label positioning */
+            }
+
+            .terms {
+                font-size: 10px; /* Reduced font size for terms */
+            }
+
+            .submit-btn {
+                padding: 8px 12px; /* Reduced padding for submit button */
+                font-size: 14px; /* Smaller font size for submit button */
+            }
+        }
+
+        @media (max-width: 768px) {
+            .popup-form {
+                flex-direction: column;
+                width: 100%;
+                max-width: 100%;
+                max-height: 90%; /* Adjust the height to prevent touching top and bottom */
+                overflow-y: auto; /* Add scroll if content exceeds the height */
+                margin: 10px; /* Add margin to prevent touching the edges */
+            }
+
+            .left-section {
+                display: none;
+            }
+
+            .right-section {
+                width: 100%;
+                padding: 15px; /* Add padding for better spacing */
+            }
+
+            .form-group .input-field {
+                flex: 1 1 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- main content starts -->
+  <div class="background">
+    <div class="content">
+      <img src="images/logo1.png" alt="NMIMS Logo" class="logo">
+      <h1>Get Top Indian Universities for MBA</h1>
+      <p>Accelerate Your Career Growth</p>
+      <div class="badges">
+        <img src="images/other .png" alt="Ranked Badge">
+
+      </div>
+    </div>
+
+  </div>
+
+  <div class="first-section">
+    <h1>Experience a powerful online education. Unlike any other.</h1>
+    <p>Created by the best in academics and business management.</p>
+  </div>
+  <div class="second-section">
+    <div class="grid-item">
+      <img src="images/1.png" alt="Icon 1" class="icon" />
+      <h3>Seamless Career Transformation with an MBA</h3>
+      <p>Study anytime anywhere with 24X7 access to all lectures ‘live & recorded’</p>
+    </div>
+    <div class="grid-item highlight">
+      <img src="images/2.png" alt="Icon 2" class="icon" />
+      <h3>Leverage the NMIMS Legacy</h3>
+      <p>NMIMS CDOE Programs are highly regarded by top corporate firms in India</p>
+    </div>
+    <div class="grid-item">
+      <img src="images/3.png" alt="Icon 3" class="icon" />
+      <h3>NMIMS excellence, now accessible remotely</h3>
+      <p>Empowering individuals to fulfill their career goals uninterrupted from a location of their choice or on-the-go
+      </p>
+    </div>
+    <div class="grid-item highlight">
+      <img src="images/4.png" alt="Icon 4" class="icon" />
+      <h3>500+ hiring partners, countless opportunities</h3>
+      <p>Get access to 500+ hiring partners including multinational companies, corporations, and start-ups</p>
+    </div>
+    <div class="grid-item">
+      <img src="images/5.png" alt="Icon 5" class="icon" />
+      <h3>UGC-aligned four-quadrant learning model</h3>
+      <p>Access Student Portal: Rich Course Content, Live lectures, Doubt Clearing Sessions, and Industry Experts'
+        sessions</p>
+    </div>
+    <div class="grid-item highlight">
+      <img src="images/6.png" alt="Icon 6" class="icon" />
+      <h3>Advance your career with our dedicated Career Services*</h3>
+      <p>Design your future with Career Services, a unique offering to help achieve your career goals</p>
+    </div>
+  </div>
+
+
+
+
+
+  <!-- Main Content Card -->
+  <div class="main-section">
+    <div class="container">
+      <h1>NMIMS CDOE : India’s Largest Online & Distance Learning Destination</h1>
+      <p>NMIMS CDOE is the distance and online education arm of NMIMS University.</p>
+      <p>NMIMS CDOE began its ODL & OL journey in 2013 with a state-of-the-art learning management system to provide
+        interactive learning on connected platforms 24/7.</p>
+      <p>NMIMS CDOE is changing the dynamics of higher education delivery in India while empowering students across
+        India and enabling them to fulfil their dreams and aspirations.</p>
+    </div>
+  </div>
+
+  <!-- Footer Section -->
+  <div class="footer">
+    <p>© 2024. All Rights Reserved. | <a href="#">Privacy Policy</a></p>
+
+  </div>
+
+    <!-- Popup Overlay -->
+    <div class="popup-overlay" id="popup">
+        <div class="popup-form">
+            <div class="left-section">
+                <h3>How we help you in Admission</h3>
+                <div class="feature-box">
+                    <div class="feature">
+                        <img src="b4.png" alt="">
+                        <span>Brochure Details</span>
+                    </div>
+                    <div class="feature">
+                        <img src="b2.png" alt="">
+                        <span>Check Detailed Fees</span>
+                    </div>
+                    <div class="feature">
+                        <img src="b3.png" alt="">
+                        <span>Shortlist & Apply</span>
+                    </div>
+                    <div class="feature">
+                        <img src="b4.png" alt="">
+                        <span>24/7 Counseling</span>
+                    </div>
+                    <div class="feature">
+                        <img src="b5.png" alt="">
+                        <span>Scholarships</span>
+                    </div>
+                </div>
+                <div class="caption">
+                    Discover the perfect program to advance your career. Our team is here to guide you every step of the way!
+                </div>
+            </div>
+
+            <div class="right-section">
+                <h2>Register Now To Apply</h2>
+                <p>Get details and latest updates</p>
+                <form id="registration-form">
+                    <div class="form-group">
+                        <div class="input-field">
+                            <input type="text" id="name" placeholder=" " required>
+                            <label for="name">Name</label>
+                        </div>
+                        <div class="input-field">
+                            <input type="email" id="email" placeholder=" " required>
+                            <label for="email">Email</label>
+                        </div>
+                        <div class="input-field">
+                            <input type="tel" id="phone" placeholder=" " required>
+                            <label for="phone">Phone</label>
+                        </div>
+
+                        <div class="input-field">
+                            <input type="text" id="mode" placeholder=" " required>
+                            <label for="mode">Mode (Online MBA/ Regular MBA)</label>
+                        </div>
+                        <div class="input-field">
+                            <input type="text" id="city" placeholder=" " required>
+                            <label for="city">City</label>
+                        </div>
+                        <div class="input-field">
+                            <select id="state" class="state" required>
+                                <option value="" disabled selected></option>
+                                <option>Andhra Pradesh</option>
+                                <option>Bihar</option>
+                                <!-- Add all states here -->
+                            </select>
+                            <label for="state">State</label>
+                        </div>
+                    </div>
+                    <p class="terms">By submitting this form, you accept and agree to our <a href="#">Terms of Use</a>.</p>
+                    <button type="submit" class="submit-btn">SUBMIT</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const popup = document.getElementById('popup');
+            const body = document.body;
+            const form = document.getElementById('registration-form');
+
+            // Show popup after 1 second
+            setTimeout(() => {
+                popup.classList.add('show');
+                body.classList.add('no-scroll');
+            }, 1000);
+
+            // Handle form submission
+            form.addEventListener('submit', (e) => {
+                e.preventDefault(); // Prevent actual submission
+                popup.classList.remove('show');
+                body.classList.remove('no-scroll');
+                alert('Form submitted successfully!');
+            });
+        });
+    </script>
+</body>
+</html>
