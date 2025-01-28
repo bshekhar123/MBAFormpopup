@@ -425,10 +425,16 @@
               <label for="phone">Phone</label>
             </div>
 
-            <div class="input-field">
-              <input type="text" id="mode" placeholder=" " required>
-              <label for="mode">Mode (Online MBA/ Regular MBA)</label>
-            </div>
+              <div class="input-field">
+              <select id="mode" class="mode" required>
+                <option value="" disabled selected></option>
+
+                <option>Online MBA</option>
+                <option>Regular MBA</option>
+              </select>
+
+
+            
             <div class="input-field">
               <input type="text" id="city" placeholder=" " required>
               <label for="city">City</label>
@@ -584,6 +590,16 @@
     const db = firebase.firestore();
   </script>
 
+  
+<script async src="https://www.googletagmanager.com/gtag/js?id=AW-11550377895">
+</script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'AW-11550377895');
+</script>
 
 
 
